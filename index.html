@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Deepti Prakash</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+
+
+  <div class="container">
+
+    <div class="date" id="current-date"></div>
+
+    <header>
+      <nav class="nav">
+
+        <a href="/">home</a>
+        <span>·</span>
+
+        <a href="#writing">writing</a>
+        <span>·</span>
+
+        <a href="#projects">projects</a>
+        <span>.</span>
+        <a href="notes.html">notes</a>
+
+      </nav>
+
+      <h1>Deepti Prakash</h1>
+
+      <p class="subtitle">
+        computer science student.<br>
+        explorer.<br>
+        lifelong learner.
+      </p>
+      <div class="divider"></div>
+
+    </header>
+
+
+  <section class="story">
+
+    <p>
+      i've always been curious about how things work.
+    </p>
+
+    <p>
+      from the systems that power the internet
+      to the decisions that shape human behavior.
+    </p>
+
+    <p>
+      that curiosity has led me down many paths,
+      and i'm still exploring.
+    </p>
+
+    <p>
+      today, i'm studying computer science at
+      <span class="accent">mit manipal</span>.
+    </p>
+
+    <p class="section-label">currently exploring</p>
+
+    <ul>
+      <li><span class="accent">software engineering</span></li>
+      <li><span class="accent">backend development</span></li>
+      <li><span class="accent">data structures & algorithms</span></li>
+      <li><span class="accent">psychology</span></li>
+    </ul>
+
+    <p>
+      building projects,
+      learning in public,
+      and chasing curiosity wherever it leads.
+    </p>
+
+    <p>
+      welcome to my corner of the internet.
+    </p>
+  </section>
+
+    <section class="writing" id="writing">
+
+      <p class="section-label">
+        writing
+      </p>
+      <p class="coming soon">  under construction.
+
+        <br>
+        a collection of thoughts,
+        lessons,
+        and experiments that survived overthinking.
+        </br>
+      </p>
+    </section>
+    <section class="notes" id="notes">
+      <p class="section-label">
+        notes
+      </p>
+      <p class="notes" > things i've learned, forgotten, and learned again.</p>
+      <br>
+      <a href="notes.html"> browse notes</a>
+    </section>
+
+    <section class="links">
+
+      <p class="section-label">
+        elsewhere
+      </p>
+
+      <a href="https://github.com/deeptiprakash2202-coder" target="_blank">
+        github ↗
+      </a>
+
+      <a href="https://www.linkedin.com/in/deepti-prakash-797a56262/" target="_blank">
+        linkedin ↗
+      </a>
+
+      <a href="https://instagram.com/_deeps_2202" target="_blank">
+        instagram ↗
+      </a>
+
+    </section>
+</div>
+  <script>
+    const months = [
+      "january", "february", "march", "april",
+      "may", "june", "july", "august",
+      "september", "october", "november", "december"
+    ];
+
+    const now = new Date();
+
+    document.getElementById("current-date").textContent =
+      months[now.getMonth()] + " " + now.getFullYear();
+  </script>
+  <p class="footer">
+    last updated · june 2026
+  </p>
+</body>
+</html>
