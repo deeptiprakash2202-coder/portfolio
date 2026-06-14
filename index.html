@@ -405,7 +405,73 @@
     .link-arrow:hover { gap: 14px; color: var(--accent2); }
     .link-arrow .arr { transition: transform 0.3s; }
     .link-arrow:hover .arr { transform: translateX(4px); }
+    /* COLLABORATION */
 
+    #collaboration .writing-msg {
+      max-width: 700px;
+      margin-bottom: 2rem;
+    }
+
+    #collaboration .writing-msg p {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.4;
+      font-style: italic;
+      color: var(--text);
+    }
+
+    #collaboration .notes-text {
+      max-width: 650px;
+    }
+
+    #collaboration .notes-text p {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 2;
+      margin-bottom: 2rem;
+    }
+
+    #collaboration {
+      position: relative;
+    }
+
+    #collaboration::before {
+      content: '';
+      position: absolute;
+      top: 100px;
+      left: 0;
+      width: 120px;
+      height: 120px;
+      border: 1px solid rgba(201,169,110,0.15);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    #collaboration .link-arrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+
+    #collaboration .link-arrow:hover {
+      color: var(--accent2);
+      gap: 16px;
+    }
+
+    #collaboration .arr {
+      transition: transform 0.3s ease;
+    }
+
+    #collaboration .link-arrow:hover .arr {
+      transform: translateX(6px);
+    }
     /* Elsewhere */
     .social-row {
       display: flex;
@@ -690,6 +756,31 @@
         </a>
         <a href="https://instagram.com/_deeps_2202" class="social-link" target="_blank" rel="noopener">
           instagram <span class="social-ext">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section id="collaboration">
+    <div class="wrap">
+      <div class="section-label">work together</div>
+
+      <div class="writing-msg reveal" style="max-width:700px;">
+        <p>
+          i'm always interested in meeting curious people
+          who are building things that matter.
+        </p>
+      </div>
+
+      <div class="notes-text reveal">
+        <p>
+          Whether it's backend engineering, fintech,
+          startups, open-source, research, or simply an
+          interesting idea worth discussing —
+          my inbox is open.
+        </p>
+
+        <a href="deepswork22@gmail.com" class="link-arrow">
+          start a conversation <span class="arr">→</span>
         </a>
       </div>
     </div>
