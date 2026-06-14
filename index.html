@@ -293,6 +293,72 @@
       color: var(--muted);
       margin-top: 4px;
     }
+    /* PROJECTS */
+
+    .project-list {
+      border-top: 1px solid var(--border);
+    }
+
+    .project-item {
+      border-bottom: 1px solid var(--border);
+      padding: 40px 0;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .project-item:hover {
+      padding-left: 12px;
+    }
+
+    .project-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .project-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      color: var(--text);
+    }
+
+    .project-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      padding: 6px 12px;
+      border: 1px solid rgba(201,169,110,0.25);
+      color: var(--accent);
+    }
+
+    .project-badge.violet {
+      color: #8d7cff;
+      border-color: rgba(141,124,255,0.25);
+    }
+
+    .project-desc {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .project-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .stack-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+    }
 
     /* Writing */
     .writing-msg {
@@ -415,6 +481,17 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
       .reveal { opacity: 1; transform: none; }
+    }
+    @media (max-width: 640px) {
+      .project-item {
+        grid-template-columns: 1fr;
+      }
+
+      .project-stack {
+        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
     }
   </style>
 </head>
