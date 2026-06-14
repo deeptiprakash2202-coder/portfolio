@@ -1,154 +1,670 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Deepti Prakash</title>
-
-  <link rel="stylesheet" href="css/style.css">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    :root {
+      --bg: #080808;
+      --bg2: #0f0f0f;
+      --text: #f0ece3;
+      --muted: #7a7570;
+      --accent: #c9a96e;
+      --accent2: #e8d5b0;
+      --blue: #4a9ced;
+      --border: rgba(240,236,227,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* Custom cursor */
+    #cursor {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+    }
+    #cursor-ring {
+      width: 28px; height: 28px;
+      border: 1px solid rgba(201,169,110,0.4);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: all 0.12s ease;
+    }
+    body:has(a:hover) #cursor { width: 10px; height: 10px; background: var(--accent2); }
+    body:has(a:hover) #cursor-ring { width: 40px; height: 40px; border-color: rgba(201,169,110,0.6); }
+
+    /* Canvas bg */
+    #stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Layout */
+    .wrap {
+      position: relative;
+      z-index: 2;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 24px 0;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.9) 0%, transparent 100%);
+      backdrop-filter: blur(0px);
+    }
+    nav .wrap { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-logo:hover { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 0 80px;
+    }
+    .hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+    .hero-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(52px, 8vw, 88px);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.35s forwards;
+    }
+    .hero-name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-bio {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 2.0;
+      max-width: 480px;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+    .hero-bio strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+    .hero-cta {
+      display: flex; gap: 24px; align-items: center;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.65s forwards;
+    }
+    .btn-primary {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 12px 28px;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+    .btn-ghost {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .btn-ghost:hover { color: var(--text); }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      animation: fadeUp 1s ease 1.2s forwards;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .scroll-hint span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* Sections */
+    section {
+      padding: 100px 0;
+      border-top: 1px solid var(--border);
+    }
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      max-width: 80px;
+    }
+
+    /* Currently block */
+    .currently-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      margin-top: 40px;
+    }
+    .currently-item {
+      background: var(--bg);
+      padding: 28px;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .currently-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,169,110,0.04) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .currently-item:hover { background: var(--bg2); }
+    .currently-item:hover::before { opacity: 1; }
+    .item-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      opacity: 0.6;
+    }
+    .item-title {
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 400;
+      line-height: 1.4;
+    }
+    .item-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Writing */
+    .writing-msg {
+      max-width: 400px;
+    }
+    .writing-msg p {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .writing-msg small {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+
+    /* Notes */
+    .notes-block {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    .notes-text { flex: 1; }
+    .notes-text p {
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+    .link-arrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: gap 0.3s, color 0.3s;
+    }
+    .link-arrow:hover { gap: 14px; color: var(--accent2); }
+    .link-arrow .arr { transition: transform 0.3s; }
+    .link-arrow:hover .arr { transform: translateX(4px); }
+
+    /* Elsewhere */
+    .social-row {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .social-link {
+      font-size: 14px;
+      color: var(--muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .social-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .social-link:hover { color: var(--accent); }
+    .social-link:hover::after { width: 100%; }
+    .social-ext {
+      font-size: 11px;
+      opacity: 0.5;
+      transform: translateY(-2px);
+      display: inline-block;
+    }
+
+    /* Footer */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+    footer .wrap { display: flex; justify-content: space-between; align-items: center; }
+    footer p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Keyframes */
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.1); }
+    }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      .currently-grid { grid-template-columns: 1fr; }
+      .nav-links { gap: 20px; }
+      .hero-bio { font-size: 15px; }
+      body { cursor: auto; }
+      #cursor, #cursor-ring { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
 </head>
-
 <body>
 
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
 
+<canvas id="stars"></canvas>
 
-<div class="container">
-
-  <div class="date" id="current-date"></div>
-
-  <header>
-    <nav class="nav">
-
-      <a href="/">home</a>
-      <span>·</span>
-
-      <a href="#writing">writing</a>
-      <span>·</span>
-
-      <a href="#projects">projects</a>
-      <span>.</span>
-      <a href="notes.html">notes</a>
-
-    </nav>
-
-    <h1>Deepti Prakash</h1>
-
-    <p class="subtitle">
-      computer science student.<br>
-      explorer.<br>
-      lifelong learner.
-    </p>
-    <div class="divider"></div>
-
-  </header>
-
-
-  <section class="story">
-
-    <p>
-      i've always been curious about how things work.
-    </p>
-
-    <p>
-      from the systems that power the internet
-      to the decisions that shape human behavior.
-    </p>
-
-    <p>
-      that curiosity has led me down many paths,
-      and i'm still exploring.
-    </p>
-
-    <p>
-      today, i'm studying computer science at
-      <span class="accent">mit manipal</span>.
-    </p>
-
-    <p class="section-label">currently exploring</p>
-
-    <ul>
-      <li><span class="accent">software engineering</span></li>
-      <li><span class="accent">backend development</span></li>
-      <li><span class="accent">data structures & algorithms</span></li>
-      <li><span class="accent">psychology</span></li>
+<nav>
+  <div class="wrap">
+    <a href="#" class="nav-logo">dp_</a>
+    <ul class="nav-links">
+      <li><a href="#currently">now</a></li>
+      <li><a href="#writing">writing</a></li>
+      <li><a href="#elsewhere">elsewhere</a></li>
     </ul>
+  </div>
+</nav>
 
-    <p>
-      building projects,
-      learning in public,
-      and chasing curiosity wherever it leads.
-    </p>
-
-    <p>
-      welcome to my little corner of the internet.
-    </p>
+<main>
+  <section class="hero" style="border: none; position: relative;">
+    <div class="wrap">
+      <p class="hero-label">mit manipal · cs · 2026</p>
+      <h1 class="hero-name">Deepti<br><em>Prakash</em></h1>
+      <p class="hero-bio">
+        <strong>computer science student</strong> — curious about how systems work,<br>
+        from the code that powers the internet<br>
+        to the patterns that shape human behavior.
+      </p>
+      <div class="hero-cta">
+        <a href="#currently" class="btn-primary">see what i'm building</a>
+        <a href="https://github.com/deeptiprakash2202-coder" class="btn-ghost" target="_blank" rel="noopener">github ↗</a>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>scroll</span>
+      <div class="scroll-line"></div>
+    </div>
   </section>
 
-  <section class="writing" id="writing">
-
-    <p class="section-label">
-      writing
-    </p>
-    <p class="coming soon">  under construction.
-
-      <br>
-      a collection of thoughts,
-      lessons,
-      and experiments that survived overthinking.
-      </br>
-    </p>
+  <section id="currently">
+    <div class="wrap">
+      <div class="section-label">currently exploring</div>
+      <div class="currently-grid reveal">
+        <div class="currently-item">
+          <div class="item-num">01</div>
+          <div class="item-title">Backend Development</div>
+          <div class="item-sub">Python · FastAPI · REST APIs</div>
+        </div>
+        <div class="currently-item">
+          <div class="item-num">02</div>
+          <div class="item-title">Data Structures & Algorithms</div>
+          <div class="item-sub">LeetCode · problem patterns</div>
+        </div>
+        <div class="currently-item">
+          <div class="item-num">03</div>
+          <div class="item-title">Systems Thinking</div>
+          <div class="item-sub">how the internet works, actually</div>
+        </div>
+        <div class="currently-item">
+          <div class="item-num">04</div>
+          <div class="item-title">Psychology</div>
+          <div class="item-sub">the other kind of system</div>
+        </div>
+      </div>
+    </div>
   </section>
-  <section class="notes" id="notes">
-    <p class="section-label">
-      notes
-    </p>
-    <p class="notes" > things i've learned, forgotten, and learned again.</p>
-    <br>
-    <a href="notes.html"> browse notes</a>
+
+  <section id="writing">
+    <div class="wrap">
+      <div class="section-label">writing</div>
+      <div class="writing-msg reveal">
+        <p>"a collection of thoughts, lessons, and experiments that survived overthinking."</p>
+        <small>— under construction —</small>
+      </div>
+    </div>
   </section>
 
-  <section class="links">
-
-    <p class="section-label">
-      elsewhere
-    </p>
-
-    <a href="https://github.com/deeptiprakash2202-coder" target="_blank">
-      github ↗
-    </a>
-
-    <a href="https://www.linkedin.com/in/deepti-prakash-797a56262/" target="_blank">
-      linkedin ↗
-    </a>
-
-    <a href="https://instagram.com/_deeps_2202" target="_blank">
-      instagram ↗
-    </a>
-
+  <section id="notes">
+    <div class="wrap">
+      <div class="section-label">notes</div>
+      <div class="notes-block reveal">
+        <div class="notes-text">
+          <p>things i've learned, forgotten, and learned again.<br>living documentation of a curious mind.</p>
+          <a href="/notes.html" class="link-arrow">
+            browse notes <span class="arr">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
   </section>
-</div>
+
+  <section id="elsewhere">
+    <div class="wrap">
+      <div class="section-label">elsewhere</div>
+      <div class="social-row reveal">
+        <a href="https://github.com/deeptiprakash2202-coder" class="social-link" target="_blank" rel="noopener">
+          github <span class="social-ext">↗</span>
+        </a>
+        <a href="https://www.linkedin.com/in/deepti-prakash-797a56262/" class="social-link" target="_blank" rel="noopener">
+          linkedin <span class="social-ext">↗</span>
+        </a>
+        <a href="https://instagram.com/_deeps_2202" class="social-link" target="_blank" rel="noopener">
+          instagram <span class="social-ext">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>deepti prakash</p>
+    <p>last updated · june 2026</p>
+  </div>
+</footer>
+
 <script>
-  const months = [
-    "january", "february", "march", "april",
-    "may", "june", "july", "august",
-    "september", "october", "november", "december"
-  ];
+  // Constellation canvas
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles, mouse = { x: -9999, y: -9999 };
 
-  const now = new Date();
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
 
-  document.getElementById("current-date").textContent =
-    months[now.getMonth()] + " " + now.getFullYear();
+  function initParticles() {
+    const count = Math.floor((W * H) / 14000);
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.2 + 0.2,
+      ox: 0, oy: 0,
+      vx: (Math.random() - 0.5) * 0.08,
+      vy: (Math.random() - 0.5) * 0.08,
+      brightness: Math.random() * 0.5 + 0.2,
+    }));
+  }
+
+  function drawFrame() {
+    ctx.clearRect(0, 0, W, H);
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      // Drift
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+
+      // Mouse repel (gentle)
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 120) {
+        const force = (120 - dist) / 120;
+        p.x += dx / dist * force * 0.6;
+        p.y += dy / dist * force * 0.6;
+      }
+
+      // Draw star
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(240,236,227,${p.brightness})`;
+      ctx.fill();
+
+      // Connect nearby stars
+      for (let j = i + 1; j < particles.length; j++) {
+        const q = particles[j];
+        const ex = p.x - q.x;
+        const ey = p.y - q.y;
+        const ed = Math.sqrt(ex * ex + ey * ey);
+
+        if (ed < 90) {
+          const opacity = (1 - ed / 90) * 0.12;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = `rgba(201,169,110,${opacity})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Mouse glow connections
+    for (const p of particles) {
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 160) {
+        const opacity = (1 - dist / 160) * 0.35;
+        ctx.beginPath();
+        ctx.moveTo(mouse.x, mouse.y);
+        ctx.lineTo(p.x, p.y);
+        ctx.strokeStyle = `rgba(201,169,110,${opacity})`;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    }
+
+    requestAnimationFrame(drawFrame);
+  }
+
+  resize();
+  initParticles();
+  drawFrame();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+
+  // Mouse tracking
+  let cursorX = 0, cursorY = 0;
+  let ringX = 0, ringY = 0;
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+
+  document.addEventListener('mousemove', e => {
+    cursorX = e.clientX;
+    cursorY = e.clientY;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  function animateCursor() {
+    ringX += (cursorX - ringX) * 0.12;
+    ringY += (cursorY - ringY) * 0.12;
+    cursor.style.left = cursorX + 'px';
+    cursor.style.top = cursorY + 'px';
+    ring.style.left = ringX + 'px';
+    ring.style.top = ringY + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => observer.observe(el));
 </script>
-<p class="footer">
-  last updated · june 2026
-</p>
 </body>
 </html>
