@@ -81,6 +81,68 @@ li {
 .links a:hover {
   opacity: 0.7;
 }
+.project-list {
+  border-top: 1px solid var(--border);
+}
+
+.project-item {
+  border-bottom: 1px solid var(--border);
+  padding: 40px 0;
+  transition: all 0.3s ease;
+}
+
+.project-item:hover {
+  padding-left: 16px;
+}
+
+.project-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.project-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 34px;
+  color: var(--text);
+}
+
+.project-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #00d4c8;
+  border: 1px solid rgba(0,212,200,0.3);
+  padding: 6px 12px;
+}
+
+.project-badge.violet {
+  color: #9b8cff;
+  border-color: rgba(155,140,255,0.3);
+}
+
+.project-desc {
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.8;
+  max-width: 650px;
+  margin-bottom: 24px;
+}
+
+.project-stack {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stack-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  opacity: 0.7;
+}
 
 @media (max-width: 768px) {
 
